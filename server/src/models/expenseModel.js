@@ -18,6 +18,7 @@ const expenseSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+    select: false,
   },
   note: {
     type: String,
