@@ -15,7 +15,7 @@ const expenseSchema = new mongoose.Schema({
     type: String,
     required: [true, "Expense must have a category"],
   },
-  date: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },

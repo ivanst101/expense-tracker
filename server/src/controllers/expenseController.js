@@ -2,11 +2,21 @@ import { Expense } from "../models/expenseModel.js";
 
 export async function getAllExpenses(req, res) {
   try {
-    const allExpenses = await Expense.find({});
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach((item) => delete queryObj[item]);
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    const query = Expense.find(JSON.parse(queryStr));
+
+    const expenses = await query;
 
     res.status(200).json({
       status: "Success",
-      data: allExpenses,
+      results: expenses.length,
+      data: expenses,
     });
   } catch (error) {
     res.status(400).json({
