@@ -1,11 +1,9 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
-import xss from "xss-clean";
 import hpp from "hpp";
-
 import expenseRouter from "./routes/expenseRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import { globalErrorHandler } from "./controllers/errorController.js";
@@ -26,9 +24,7 @@ app.set("query parser", "extended");
 
 app.use(express.json({ limit: "10kb" }));
 
-app.use(mongoSanitize());
-
-app.use(xss());
+app.use(cookieParser());
 
 app.use(hpp());
 

@@ -7,14 +7,19 @@ import {
   updateExpense,
 } from "../controllers/expenseController.js";
 
+import { authenticateJWT } from "../middleware/JWTMiddleware.js";
+
 const expenseRouter = express.Router();
 
-expenseRouter.route("/").get(getAllExpenses).post(createExpense);
+expenseRouter
+  .route("/")
+  .get(authenticateJWT, getAllExpenses)
+  .post(createExpense);
 
 expenseRouter
   .route("/:id")
   .get(getExpense)
-  .patch(updateExpense)
+  .patch(authenticateJWT, updateExpense)
   .delete(deleteExpense);
 
 export default expenseRouter;

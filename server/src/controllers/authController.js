@@ -42,6 +42,17 @@ export async function login(req, res, next) {
   }
 
   const token = signToken(user._id);
+
+  const cookieOptions = {
+    httpOnly: true,
+    maxAge: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+  };
+  res.cookie("jwt", token, cookieOptions);
+
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
   res.status(200).json({
     status: "success",
     token,
