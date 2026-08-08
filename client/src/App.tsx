@@ -1,7 +1,7 @@
 function App() {
   return (
     <>
-      <p>Hello world!</p>
+      <p>Hello world! from App component</p>
     </>
   );
 }
