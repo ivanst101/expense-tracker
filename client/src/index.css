@@ -1,0 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+@import "tailwindcss";
+
+body {
+  @apply text-base text-surface;
+}
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+
+  --color-primary: #006c49;
+  --color-primary-light: #e8f0e9;
+  --color-gradient-white-green: #10b981;
+  --color-gradient-solid-green: #059669;
+  --color-accent: #4648d4;
+
+  --color-background: #161d19;
+  --color-surface: #3c4a42;
+
+  --color-muted: #565e74;
+}
