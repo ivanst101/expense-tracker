@@ -1,17 +1,45 @@
 import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemMedia,
+} from "@/components/ui/item";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Header() {
   return (
-    <header className="p-6 flex flex-col lg:items-center justify-start align-middle gap-4 sm:flex-row sm:items-start">
-      <div className="md:flex-1">
-        <h1 className="text-4xl sm:text-2xl text-background">Dashboard</h1>
-        <p>Welcome back, Alex. Here's your financial overview.</p>
-      </div>
-      <button className="bg-linear-to-r from-gradient-white-green to-gradient-solid-green text-white flex justify-end align-middle p-2 rounded-md">
-        <Plus />
-        Quick add
-      </button>
-      <img className="rounded-3xl" src="person.png" alt="person" />
+    <header className="w-full">
+      <Item className="flex items-center">
+        <ItemContent className="flex-1">
+          <ItemTitle className="text-4xl sm:text-2xl text-heading-one font-semibold">
+            Dashboard
+          </ItemTitle>
+
+          <ItemDescription>
+            Welcome back, Alex. Here's your financial overview.
+          </ItemDescription>
+        </ItemContent>
+
+        <ItemActions className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            className="bg-linear-to-r from-gradient-white-green to-gradient-solid-green text-white cursor-pointer hover:scale-105"
+          >
+            <Plus /> Quick add
+          </Button>
+        </ItemActions>
+
+        <ItemMedia className="!self-center">
+          <Avatar className="size-11">
+            <AvatarImage src="/person.png" />
+            <AvatarFallback>AL</AvatarFallback>
+          </Avatar>
+        </ItemMedia>
+      </Item>
     </header>
   );
 }
