@@ -9,6 +9,7 @@ import {
   ItemMedia,
 } from "@/components/ui/item";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import DialogWindow from "../Dialog";
 
 export default function Header() {
   return (
@@ -25,15 +26,19 @@ export default function Header() {
         </ItemContent>
 
         <ItemActions className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            className="bg-linear-to-r from-gradient-white-green to-gradient-solid-green text-white cursor-pointer hover:scale-105"
-          >
-            <Plus /> Quick add
-          </Button>
+          <DialogWindow
+            button={
+              <Button
+                variant="outline"
+                className="bg-linear-to-r from-gradient-white-green to-gradient-solid-green text-white cursor-pointer hover:scale-105"
+              >
+                <Plus /> Quick add
+              </Button>
+            }
+          />
         </ItemActions>
 
-        <ItemMedia className="!self-center">
+        <ItemMedia>
           <Avatar className="size-11">
             <AvatarImage src="/person.png" />
             <AvatarFallback>AL</AvatarFallback>
