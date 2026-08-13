@@ -1,4 +1,4 @@
-import { LayoutDashboard, BanknoteArrowDown, LogOut } from "lucide-react";
+import { LayoutGrid, BanknoteArrowDown, LogOut } from "lucide-react";
 import { NavLink } from "react-router";
 
 import {
@@ -18,7 +18,7 @@ const items = [
   {
     title: "Dashboard",
     url: "/dashboard",
-    icon: LayoutDashboard,
+    icon: LayoutGrid,
   },
   {
     title: "Expenses",

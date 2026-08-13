@@ -7,6 +7,7 @@ import Expenses from "./pages/Expenses.tsx";
 import ExpensesID from "./components/ExpensesID.tsx";
 import NotFound from "./components/NotFound.tsx";
 import MainLayout from "./layouts/MainLayout.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -34,8 +35,12 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </StrictMode>,
 );

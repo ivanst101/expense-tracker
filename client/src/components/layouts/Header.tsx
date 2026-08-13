@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { LayoutGrid, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -11,13 +11,17 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DialogWindow from "../Dialog";
 
-export default function Header() {
+type HeaderProps = {
+  name: string;
+};
+
+export default function Header({ name }: HeaderProps) {
   return (
     <header className="w-full">
       <Item className="flex items-center">
         <ItemContent className="flex-1">
           <ItemTitle className="text-4xl sm:text-2xl text-heading-one font-semibold">
-            Dashboard
+            <LayoutGrid /> {name}
           </ItemTitle>
 
           <ItemDescription>
