@@ -9,6 +9,8 @@ import NotFound from "./components/NotFound.tsx";
 import MainLayout from "./layouts/MainLayout.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
+import Signup from "./pages/Signup.tsx";
+import { Toaster } from "sonner";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,10 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "signup",
+    Component: Signup,
+  },
+  {
     path: "expenses/:id",
     Component: ExpensesID,
   },
@@ -41,6 +47,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <Toaster />
     </QueryClientProvider>
   </StrictMode>,
 );
