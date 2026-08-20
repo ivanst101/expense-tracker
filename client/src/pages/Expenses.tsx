@@ -13,11 +13,9 @@ export default function Expenses() {
     return <p>Error: {error.message}</p>;
   }
 
-  console.log(data);
-
   return (
     <div className="px-4 py-3">
-      <main className="container mx-auto py-10">
+      <main className="container mx-auto">
         <DataTable columns={columns} data={data.data} />
       </main>
     </div>
