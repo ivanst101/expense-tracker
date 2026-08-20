@@ -122,6 +122,7 @@
   --color-gradient-solid-green: #059669;
   --color-sidebar-text: #3c4a42;
   --color-heading-one: #161d19;
+  --color-login: #00422b;
 }
 
 @layer base {

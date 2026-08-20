@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import Signup from "./pages/Signup.tsx";
 import { Toaster } from "sonner";
+import Login from "./pages/Login.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "signup",
     Component: Signup,
+  },
+  {
+    path: "login",
+    Component: Login,
   },
   {
     path: "expenses/:id",
