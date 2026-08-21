@@ -1,5 +1,5 @@
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
-import * as z from "zod";
+import { loginSchema, type LoginType } from "@/types/formTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
@@ -14,13 +14,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const loginSchema = z.object({
-  email: z.email(),
-  password: z.string(),
-});
-
-type LoginType = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const form = useForm<LoginType>({
