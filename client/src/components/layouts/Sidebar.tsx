@@ -13,6 +13,7 @@ import {
   SidebarFooter,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useLogout } from "@/hooks/useCurrentUser";
 
 const items = [
   {
@@ -28,6 +29,7 @@ const items = [
 ];
 
 export default function Sidebar() {
+  const { mutate: logout, isPending } = useLogout();
   return (
     <ShadcnSidebar
       variant="floating"
@@ -75,9 +77,14 @@ export default function Sidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Log Out">
-              <NavLink to="/dashboard" className="flex gap-2 items-center">
+              <NavLink
+                to="/signup"
+                className="flex gap-2 items-center"
+                aria-disabled={isPending}
+                onClick={() => logout()}
+              >
                 <LogOut />
-                Log out
+                {isPending ? "Logging out.." : "Logout"}
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>

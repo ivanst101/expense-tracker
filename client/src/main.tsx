@@ -12,22 +12,33 @@ import "./index.css";
 import Signup from "./pages/Signup.tsx";
 import { Toaster } from "sonner";
 import Login from "./pages/Login.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    Component: MainLayout,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: "dashboard",
-        Component: Dashboard,
+        path: "/",
+        Component: MainLayout,
+        children: [
+          {
+            path: "dashboard",
+            Component: Dashboard,
+          },
+          {
+            path: "expenses",
+            Component: Expenses,
+          },
+        ],
       },
       {
-        path: "expenses",
-        Component: Expenses,
+        path: "expenses/:id",
+        Component: ExpensesID,
       },
     ],
   },
+
   {
     path: "signup",
     Component: Signup,
@@ -35,10 +46,6 @@ const router = createBrowserRouter([
   {
     path: "login",
     Component: Login,
-  },
-  {
-    path: "expenses/:id",
-    Component: ExpensesID,
   },
   {
     path: "*",

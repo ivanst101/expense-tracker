@@ -10,12 +10,15 @@ import {
 } from "@/components/ui/item";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DialogWindow from "../Dialog";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 type HeaderProps = {
   name: string;
 };
 
 export default function Header({ name }: HeaderProps) {
+  const { data: user } = useCurrentUser();
+
   return (
     <header className="w-full">
       <Item className="flex items-center">
@@ -25,7 +28,7 @@ export default function Header({ name }: HeaderProps) {
           </ItemTitle>
 
           <ItemDescription>
-            Welcome back, Alex. Here's your financial overview.
+            Welcome back, {user?.name}. Here's your financial overview.
           </ItemDescription>
         </ItemContent>
 

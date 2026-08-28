@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { signupShema, type SignupFormType } from "@/types/formTypes";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 
 export default function Signup() {
   const form = useForm<SignupFormType>({
@@ -29,12 +31,32 @@ export default function Signup() {
     formState: { isSubmitting },
   } = form;
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  const createUser = async function (data: SignupFormType) {
+    const response = await fetch(`${API_URL}/users/signup`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  };
+
+  const { mutateAsync } = useMutation({
+    mutationFn: createUser,
+  });
+  const navigate = useNavigate();
+
   async function onSubmit(data: SignupFormType) {
     try {
-      console.log(data);
-
+      await mutateAsync(data);
       toast.success("Account created successfully!");
-    } catch {
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
       toast.error("Something went wrong");
     }
   }
