@@ -28,7 +28,12 @@ app.use(cookieParser());
 
 app.use(hpp());
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  }),
+);
 
 app.use("/api/v1/expenses", expenseRouter);
 app.use("/api/v1/users", userRouter);

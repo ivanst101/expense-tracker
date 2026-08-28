@@ -12,10 +12,20 @@ export async function signup(req, res, next) {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
+    confirmPassword: req.body.confirmPassword,
   });
 
   const token = signToken(newUser._id);
+
+  const cookieOptions = {
+    httpOnly: true,
+    maxAge: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    ),
+  };
+  res.cookie("jwt", token, cookieOptions);
+
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
 
   res.status(201).json({
     status: "success",
@@ -56,5 +66,25 @@ export async function login(req, res, next) {
   res.status(200).json({
     status: "success",
     token,
+  });
+}
+
+export async function logout(req, res, next) {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({
+    status: "success",
+  });
+}
+
+export async function me(req, res, next) {
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: req.user,
+    },
   });
 }

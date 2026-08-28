@@ -3,9 +3,13 @@ import { User } from "../models/userModel.js";
 
 export const authenticateJWT = async (req, res, next) => {
   let token;
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer")) {
-    token = authHeader.split(" ")[1];
+  // const authHeader = req.headers.authorization;
+  // if (authHeader && authHeader.startsWith("Bearer")) {
+  //   token = authHeader.split(" ")[1];
+  // }
+
+  if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
