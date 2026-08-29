@@ -8,7 +8,9 @@ export async function getAllExpenses(req, res, next) {
   let queryStr = JSON.stringify(queryObj);
   queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-  let query = Expense.find(JSON.parse(queryStr));
+  const filters = JSON.parse(queryStr);
+  filters.user = req.user._id;
+  let query = Expense.find(filters);
 
   if (req.query.sort) {
     const sortBy = req.query.sort.split(",").join(" ");
@@ -44,11 +46,13 @@ export async function getAllExpenses(req, res, next) {
 }
 
 export const createExpense = async (req, res, next) => {
-  const data = req.body;
-  const newExpense = await Expense.create(data);
+  const newExpense = await Expense.create({
+    ...req.body,
+    user: req.user._id,
+  });
   res.status(201).json({
     status: "Success",
-    data: { newExpense },
+    data: newExpense,
   });
 };
 

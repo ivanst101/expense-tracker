@@ -16,6 +16,11 @@ const expenseSchema = new mongoose.Schema(
       type: String,
       required: [true, "Expense must have a category"],
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Expense must belong to a user"],
+    },
     createdAt: {
       type: Date,
       default: Date.now,

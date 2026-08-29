@@ -14,12 +14,12 @@ const expenseRouter = express.Router();
 expenseRouter
   .route("/")
   .get(authenticateJWT, getAllExpenses)
-  .post(createExpense);
+  .post(authenticateJWT, createExpense);
 
 expenseRouter
   .route("/:id")
-  .get(getExpense)
+  .get(authenticateJWT, getExpense)
   .patch(authenticateJWT, updateExpense)
-  .delete(deleteExpense);
+  .delete(authenticateJWT, deleteExpense);
 
 export default expenseRouter;
