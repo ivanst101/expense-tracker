@@ -214,15 +214,24 @@ export default function Signup() {
             )}
           />
         </FieldGroup>
-        <div className="flex justify-center grow items-center w-full">
+        <div className="flex justify-center items-center">
           <Button
             disabled={isSubmitting}
             type="submit"
-            className="bg-gradient-white-green text-login"
+            className="bg-gradient-white-green text-login w-full"
           >
             {isSubmitting ? "Signing Up..." : "Sign up"}
           </Button>
         </div>
+        <p className="flex justify-between items-center mt-3">
+          Already have an account?
+          <Button
+            className="bg-gradient-white-green text-login"
+            onClick={() => navigate("/login")}
+          >
+            Log in
+          </Button>
+        </p>
       </form>
     </main>
   );

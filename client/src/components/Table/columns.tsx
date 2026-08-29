@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { type DataTableFeatures } from "./table-features";
-import { type Expense } from "../../types/expensesType";
+import { type Expense } from "../../types/expenseType";
 
 const columnHelper = createColumnHelper<DataTableFeatures, Expense>();
 

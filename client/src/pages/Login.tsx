@@ -3,7 +3,6 @@ import { loginSchema, type LoginType } from "@/types/formTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
-
 import { useLogin } from "@/hooks/useLogin";
 
 import {
@@ -111,11 +110,11 @@ export default function Login() {
             )}
           />
 
-          <div className="flex justify-center w-full">
+          <div className="flex justify-center">
             <Button
               disabled={isSubmitting || login.isPending}
               type="submit"
-              className="bg-gradient-white-green text-login"
+              className="bg-gradient-white-green text-login w-full"
             >
               {isSubmitting || login.isPending ? "Logging in..." : "Log in"}
             </Button>

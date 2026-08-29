@@ -20,5 +20,17 @@ export const signupShema = z
     path: ["confirmPassword"],
   });
 
+export const expenseSchema = z.object({
+  title: z.string().min(1, "Please enter a title"),
+  amount: z
+    .string()
+    .min(1, "Amount is required")
+    .refine((value) => Number(value) > 0, "Amount must be greater than 0"),
+  category: z.string().min(1, "Please select a category"),
+  date: z.string().min(1, "Date is required"),
+  note: z.string().optional(),
+});
+
+export type ExpenseFormValues = z.infer<typeof expenseSchema>;
 export type LoginType = z.infer<typeof loginSchema>;
 export type SignupFormType = z.infer<typeof signupShema>;

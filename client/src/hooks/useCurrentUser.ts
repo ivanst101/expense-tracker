@@ -49,7 +49,7 @@ export function useLogout() {
         queryKey: ["currentUser"],
       });
 
-      navigate("/signup");
+      navigate("/login");
     },
   });
 }
