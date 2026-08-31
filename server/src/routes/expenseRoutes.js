@@ -5,6 +5,7 @@ import {
   getAllExpenses,
   getExpense,
   updateExpense,
+  getUserStats,
 } from "../controllers/expenseController.js";
 
 import { authenticateJWT } from "../middleware/JWTMiddleware.js";
@@ -15,6 +16,8 @@ expenseRouter
   .route("/")
   .get(authenticateJWT, getAllExpenses)
   .post(authenticateJWT, createExpense);
+
+expenseRouter.route("/dashboard").get(authenticateJWT, getUserStats);
 
 expenseRouter
   .route("/:id")

@@ -108,3 +108,93 @@ export async function getExpense(req, res) {
     },
   });
 }
+
+export async function getUserStats(req, res) {
+  const today = new Date();
+
+  const startDate = new Date(today.getFullYear(), today.getMonth() - 4, 1);
+
+  const stats = await Expense.aggregate([
+    {
+      $match: {
+        user: req.user._id,
+        date: {
+          $gte: startDate,
+          $lt: new Date(today.getFullYear(), today.getMonth() + 1, 1),
+        },
+      },
+    },
+
+    {
+      $group: {
+        _id: {
+          year: { $year: "$date" },
+          month: { $month: "$date" },
+        },
+        totalAmount: {
+          $sum: "$amount",
+        },
+      },
+    },
+
+    {
+      $sort: {
+        "_id.year": 1,
+        "_id.month": 1,
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        year: "$_id.year",
+        monthNumber: "$_id.month",
+        totalAmount: 1,
+      },
+    },
+  ]);
+
+  const months = [];
+
+  for (let i = 4; i >= 0; i--) {
+    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+
+    const year = date.getFullYear();
+    const monthNumber = date.getMonth() + 1;
+
+    const existingMonth = stats.find(
+      (stat) => stat.year === year && stat.monthNumber === monthNumber,
+    );
+
+    months.push({
+      month: date.toLocaleString("en-US", {
+        month: "short",
+      }),
+      totalAmount: existingMonth?.totalAmount ?? 0,
+    });
+  }
+
+  const totalByCategory = await Expense.aggregate([
+    {
+      $group: {
+        _id: "$category",
+        totalAmountByCategory: { $sum: "$amount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        category: "$_id",
+        totalAmountByCategory: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: "Success",
+    data: {
+      previousMonths: months,
+      totalsCategory: totalByCategory,
+    },
+  });
+}
