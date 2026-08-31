@@ -123,6 +123,8 @@
   --color-sidebar-text: #3c4a42;
   --color-heading-one: #161d19;
   --color-login: #00422b;
+  --color-chart: #006c49;
+  --color-expense-red: #ba1a1a;
 }
 
 @layer base {

@@ -1,4 +1,4 @@
-import type { User } from "@/types/SignUpTypes";
+import type { User } from "@/types/signUpTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 

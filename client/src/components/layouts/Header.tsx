@@ -19,6 +19,11 @@ type HeaderProps = {
 export default function Header({ name }: HeaderProps) {
   const { data: user } = useCurrentUser();
 
+  const capitalizeName = function (username?: string) {
+    if (!username) return;
+    return username.charAt(0).toUpperCase() + username.slice(1);
+  };
+
   return (
     <header className="w-full">
       <Item className="flex items-center">
@@ -28,7 +33,9 @@ export default function Header({ name }: HeaderProps) {
           </ItemTitle>
 
           <ItemDescription>
-            Welcome back, {user?.name}. Here's your financial overview.
+            Welcome back,
+            <span className="font-bold"> {capitalizeName(user?.name)}</span>.
+            Here's your financial overview.
           </ItemDescription>
         </ItemContent>
 

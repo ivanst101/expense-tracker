@@ -41,9 +41,12 @@ interface DialogWindowProps {
 export default function DialogWindow({ button }: DialogWindowProps) {
   const [open, setOpen] = useState<boolean>(false);
   const categories = [
+    { label: "Food", value: "food" },
     { label: "Bills", value: "bill" },
     { label: "Fuel", value: "fuel" },
     { label: "GYM", value: "gym" },
+    { label: "Barber", value: "barber" },
+    { label: "Birthday", value: "birthday" },
   ];
 
   const { mutate: addExpense } = useAddExpense();

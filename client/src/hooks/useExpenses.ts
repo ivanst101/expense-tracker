@@ -1,5 +1,6 @@
 import type { Expense, ExpenseResponse } from "@/types/expenseType";
 import type { ExpenseFormValues } from "@/types/formTypes";
+import type { StatsResponse } from "@/types/statsType";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -21,6 +22,26 @@ export const useCurrentExpenses = () => {
   return useQuery({
     queryKey: ["expenses"],
     queryFn: getCurrentExpenses,
+  });
+};
+
+export const getUserStats = async (): Promise<StatsResponse["data"]> => {
+  const response = await fetch(`${API_URL}/expenses/dashboard`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch users expenses!");
+  }
+
+  const result: StatsResponse = await response.json();
+  return result.data;
+};
+
+export const useCurrentStats = () => {
+  return useQuery({
+    queryKey: ["stats"],
+    queryFn: getUserStats,
   });
 };
 
