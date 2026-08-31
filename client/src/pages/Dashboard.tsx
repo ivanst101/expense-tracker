@@ -89,7 +89,6 @@ export default function Dashboard() {
         <Card className="[--card-spacing:--spacing(4)]">
           <CardHeader className="items-center pb-0">
             <CardTitle className="text-chart">Spending by category</CardTitle>
-            <CardDescription>January - June 2024</CardDescription>
           </CardHeader>
           <CardContent>
             <PieChartComponent totalsCategory={data?.totalsCategory ?? []} />

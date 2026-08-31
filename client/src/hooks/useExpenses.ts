@@ -79,3 +79,28 @@ export const useAddExpense = () => {
     },
   });
 };
+
+export const deleteExpense = async (id: string) => {
+  const response = await fetch(`${API_URL}/expenses/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete expense");
+  }
+};
+
+export function useDeleteExpense() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteExpense,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["expenses"],
+      });
+    },
+  });
+}

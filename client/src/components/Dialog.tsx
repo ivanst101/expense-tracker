@@ -124,7 +124,7 @@ export default function DialogWindow({ button }: DialogWindowProps) {
                     id="amount"
                     type="number"
                     placeholder="0.00"
-                    step="0.01"
+                    step="1"
                   />
 
                   {fieldState.error && (

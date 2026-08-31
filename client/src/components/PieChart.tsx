@@ -61,7 +61,7 @@ export default function PieChartComponent({ totalsCategory }: PieChartProps) {
     <>
       <ChartContainer
         config={chartConfig}
-        className="mx-auto aspect-square max-h-[350px]"
+        className="mx-auto aspect-square max-h-87.5"
       >
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent />} />
@@ -76,22 +76,36 @@ export default function PieChartComponent({ totalsCategory }: PieChartProps) {
             outerRadius={120}
           >
             <Label
-              position="center"
-              content={() => (
-                <text x="50%" y="50%">
-                  <tspan
-                    x="33%"
-                    y="37%"
-                    className="fill-foreground text-3xl font-bold"
-                  >
-                    {totalExpenses.toLocaleString()}
-                  </tspan>
+              content={({ viewBox }) => {
+                if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                  return (
+                    <text
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      <tspan
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        className="fill-foreground text-3xl font-bold"
+                      >
+                        {totalExpenses.toLocaleString()}
+                      </tspan>
 
-                  <tspan x="45%" y="43%" className="fill-muted-foreground">
-                    Total
-                  </tspan>
-                </text>
-              )}
+                      <tspan
+                        x={viewBox.cx}
+                        y={(viewBox.cy ?? 0) + 24}
+                        className="fill-muted-foreground"
+                      >
+                        Total
+                      </tspan>
+                    </text>
+                  );
+                }
+
+                return null;
+              }}
             />
           </Pie>
 
