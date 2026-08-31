@@ -57,8 +57,10 @@ export const createExpense = async (req, res, next) => {
 };
 
 export async function deleteExpense(req, res) {
-  const id = req.params.id;
-  const expense = await Expense.findByIdAndDelete(id);
+  const expense = await Expense.findByIdAndDelete({
+    _id: req.params.id,
+    user: req.user._id,
+  });
 
   if (!expense) {
     error.statusCode = 404;
@@ -175,6 +177,15 @@ export async function getUserStats(req, res) {
   }
 
   const totalByCategory = await Expense.aggregate([
+    {
+      $match: {
+        user: req.user._id,
+        date: {
+          $gte: startDate,
+          $lt: new Date(today.getFullYear(), today.getMonth() + 1, 1),
+        },
+      },
+    },
     {
       $group: {
         _id: "$category",
