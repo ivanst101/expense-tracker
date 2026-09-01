@@ -46,7 +46,8 @@ export default function DialogWindow({ button }: DialogWindowProps) {
     { label: "Fuel", value: "fuel" },
     { label: "GYM", value: "gym" },
     { label: "Barber", value: "barber" },
-    { label: "Birthday", value: "birthday" },
+    { label: "Essential", value: "essential" },
+    { label: "Rest", value: "rest" },
   ];
 
   const { mutate: addExpense } = useAddExpense();

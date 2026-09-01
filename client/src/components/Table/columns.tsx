@@ -43,6 +43,16 @@ export const columns = (onDelete: (id: string) => void) =>
 
     columnHelper.accessor("category", {
       header: "Category",
+      cell: ({ row }) => {
+        const categoryValue =
+          row.original.category.charAt(0).toUpperCase() +
+          row.original.category.slice(1);
+        return <div>{categoryValue}</div>;
+      },
+    }),
+
+    columnHelper.accessor("note", {
+      header: "Note",
     }),
 
     columnHelper.accessor("amount", {

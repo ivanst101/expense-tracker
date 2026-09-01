@@ -76,6 +76,10 @@ export const useAddExpense = () => {
       queryClient.invalidateQueries({
         queryKey: ["expenses"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["stats"],
+      });
     },
   });
 };

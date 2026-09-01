@@ -19,17 +19,13 @@ type PieChartProps = {
 };
 
 const categoryColors: Record<string, string> = {
-  rest: "#006C49",
-  groceries: "#4648D4",
-  bill: "#F59E0B",
-  barber: "#EC4899",
-  bills: "#8B5CF6",
-  school: "#14B8A6",
-  fuel: "#F97316",
-  gym: "#06B6D4",
-  essential: "#84CC16",
-  electronics: "#6366F1",
-  food: "#EF4444",
+  food: "#ecf39e",
+  bills: "#90a955",
+  fuel: "#344e41",
+  gym: "#52b772",
+  barber: "#588157",
+  essential: "#a3b18a",
+  rest: "#b7e4c7",
 };
 
 export default function PieChartComponent({ totalsCategory }: PieChartProps) {
@@ -59,62 +55,66 @@ export default function PieChartComponent({ totalsCategory }: PieChartProps) {
 
   return (
     <>
-      <ChartContainer
-        config={chartConfig}
-        className="mx-auto aspect-square max-h-87.5"
-      >
-        <PieChart>
-          <ChartTooltip content={<ChartTooltipContent />} />
+      {chartData?.length > 0 ? (
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-87.5"
+        >
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent />} />
 
-          <Pie
-            data={chartData}
-            dataKey="totalAmountByCategory"
-            nameKey="category"
-            cx="50%"
-            cy="50%"
-            innerRadius={80}
-            outerRadius={120}
-          >
-            <Label
-              content={({ viewBox }) => {
-                if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                  return (
-                    <text
-                      x={viewBox.cx}
-                      y={viewBox.cy}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      <tspan
+            <Pie
+              data={chartData}
+              dataKey="totalAmountByCategory"
+              nameKey="category"
+              cx="50%"
+              cy="50%"
+              innerRadius={80}
+              outerRadius={120}
+            >
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-foreground text-3xl font-bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
                       >
-                        {totalExpenses.toLocaleString()}
-                      </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-3xl font-bold"
+                        >
+                          {totalExpenses.toLocaleString()}
+                        </tspan>
 
-                      <tspan
-                        x={viewBox.cx}
-                        y={(viewBox.cy ?? 0) + 24}
-                        className="fill-muted-foreground"
-                      >
-                        Total
-                      </tspan>
-                    </text>
-                  );
-                }
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy ?? 0) + 24}
+                          className="fill-muted-foreground"
+                        >
+                          Total
+                        </tspan>
+                      </text>
+                    );
+                  }
 
-                return null;
-              }}
+                  return null;
+                }}
+              />
+            </Pie>
+
+            <ChartLegend
+              content={<ChartLegendContent nameKey="category" />}
+              className="-translate-y-1 flex-wrap gap-2 *:basis-1/4 *:justify-center"
             />
-          </Pie>
-
-          <ChartLegend
-            content={<ChartLegendContent nameKey="category" />}
-            className="-translate-y-1 flex-wrap gap-2 *:basis-1/4 *:justify-center"
-          />
-        </PieChart>
-      </ChartContainer>
+          </PieChart>
+        </ChartContainer>
+      ) : (
+        <p>There is no data. Please add some expenses!</p>
+      )}
     </>
   );
 }

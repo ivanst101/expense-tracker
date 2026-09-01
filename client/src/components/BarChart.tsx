@@ -24,27 +24,33 @@ export default function BarChartComponent({ previousMonths }: BarChartProps) {
     },
   } satisfies ChartConfig;
 
+  const hasExpenses = previousMonths.some((item) => item.totalAmount > 0);
+
   return (
     <>
-      <ChartContainer config={chartConfig} className="min-h-50 w-full">
-        <BarChart accessibilityLayer data={previousMonths}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip content={<ChartTooltipContent />} />
-          <ChartLegend content={<ChartLegendContent />} />
-          <Bar
-            dataKey="totalAmount"
-            fill="var(--color-totalAmount)"
-            radius={4}
-          />
-        </BarChart>
-      </ChartContainer>
+      {hasExpenses ? (
+        <ChartContainer config={chartConfig} className="min-h-50 w-full">
+          <BarChart accessibilityLayer data={previousMonths}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Bar
+              dataKey="totalAmount"
+              fill="var(--color-totalAmount)"
+              radius={4}
+            />
+          </BarChart>
+        </ChartContainer>
+      ) : (
+        <p>There is no data. Please add some expenses!</p>
+      )}
     </>
   );
 }

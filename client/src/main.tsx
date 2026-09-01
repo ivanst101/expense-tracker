@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { Toaster } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -23,6 +23,10 @@ const router = createBrowserRouter([
         Component: MainLayout,
         children: [
           {
+            index: true,
+            element: <Navigate to="/dashboard" />,
+          },
+          {
             path: "dashboard",
             Component: Dashboard,
           },
@@ -30,11 +34,11 @@ const router = createBrowserRouter([
             path: "expenses",
             Component: Expenses,
           },
+          {
+            path: "expenses/:id",
+            Component: ExpensesID,
+          },
         ],
-      },
-      {
-        path: "expenses/:id",
-        Component: ExpensesID,
       },
     ],
   },

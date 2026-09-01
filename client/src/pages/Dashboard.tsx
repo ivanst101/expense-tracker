@@ -22,6 +22,8 @@ import {
 
 export default function Dashboard() {
   const { data } = useCurrentStats();
+  const lastMonthExpenses: number =
+    data?.previousMonths.at(-1)?.totalAmount ?? 0;
 
   return (
     <>
@@ -60,7 +62,7 @@ export default function Dashboard() {
             <CardAction className="text-expense-red">
               <TrendingDown /> 1.2%
             </CardAction>
-            <p className="font-bold">$4,280.15</p>
+            <p className="font-bold">${lastMonthExpenses}</p>
           </CardHeader>
         </Card>
         <Card>
