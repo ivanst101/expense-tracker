@@ -1,44 +1,50 @@
+import { useState } from "react";
+import { useAddIncome } from "@/api/currentIncome";
+import { useCurrentIncome } from "@/hooks/useCurrentIncome";
+import { useCurrentStats } from "@/hooks/useExpenses";
 import BarChartComponent from "@/components/BarChart";
-import Header from "@/components/layouts/Header";
 import PieChartComponent from "@/components/PieChart";
+
+import Header from "@/components/layouts/Header";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
-  CardAction,
   CardContent,
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import { useCurrentStats } from "@/hooks/useExpenses";
-import {
-  BadgeCheck,
-  Banknote,
-  CircleEuro,
-  ShoppingCart,
-  TrendingUp,
-  TrendingDown,
-  Wallet,
-} from "lucide-react";
+import { Banknote, CircleEuro, ShoppingCart, Wallet } from "lucide-react";
 
 export default function Dashboard() {
-  const { data } = useCurrentStats();
+  const { data: stats } = useCurrentStats();
+  const { data: income } = useCurrentIncome();
+
+  const { mutate: createIncome, isPending } = useAddIncome();
+  const [amount, setAmount] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+
   const lastMonthExpenses: number =
-    data?.previousMonths.at(-1)?.totalAmount ?? 0;
+    stats?.previousMonths.at(-1)?.totalAmount ?? 0;
 
   return (
     <>
       <Header name="Dashboard" />
-      <div className="px-4 py-3 grid grid-cols-4 gap-3">
+      <div className="px-4 py-3 grid grid-cols-4 gap-3 items-start">
         <Card>
           <CardHeader>
             <CardTitle className="text-chart">
               <CircleEuro />
             </CardTitle>
             <CardDescription>TOTAL BALANCE</CardDescription>
-            <CardAction className="text-chart">
-              <TrendingUp /> 2.4%
-            </CardAction>
-            <p className="font-bold">$142,850.40</p>
+            <p className="font-bold">
+              {income?.data.income
+                ? (
+                    income.data.income.amount - lastMonthExpenses
+                  ).toLocaleString()
+                : "No data"}
+            </p>
           </CardHeader>
         </Card>
         <Card>
@@ -47,11 +53,64 @@ export default function Dashboard() {
               <Banknote />
             </CardTitle>
             <CardDescription>MONTHLY INCOME</CardDescription>
-            <CardAction className="text-chart">
-              <TrendingUp /> 8.1%
-            </CardAction>
-            <p className="font-bold">$12,400.00</p>
+            <p className="font-bold">
+              {income?.data.income
+                ? `${income.data.income.amount.toLocaleString()}`
+                : "No income added"}
+            </p>
           </CardHeader>
+          {income?.data.income == null || isEditing ? (
+            <form
+              className="flex items-center gap-1"
+              onSubmit={(e) => {
+                e.preventDefault();
+
+                createIncome(
+                  {
+                    amount: Number(amount),
+                  },
+                  {
+                    onSuccess: () => {
+                      setIsEditing(false);
+                      setAmount("");
+                    },
+                  },
+                );
+              }}
+            >
+              <Input
+                type="number"
+                placeholder="Enter monthly income"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Saving..." : "Update Income"}
+              </Button>
+
+              {isEditing && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancel
+                </Button>
+              )}
+            </form>
+          ) : (
+            <Button
+              className="w-fit self-center"
+              variant="outline"
+              onClick={() => {
+                setAmount(String(income.data.income!.amount));
+                setIsEditing(true);
+              }}
+            >
+              Edit Income
+            </Button>
+          )}
         </Card>
         <Card>
           <CardHeader>
@@ -59,10 +118,7 @@ export default function Dashboard() {
               <ShoppingCart />
             </CardTitle>
             <CardDescription>MONTHLY EXPENSES</CardDescription>
-            <CardAction className="text-expense-red">
-              <TrendingDown /> 1.2%
-            </CardAction>
-            <p className="font-bold">${lastMonthExpenses}</p>
+            <p className="font-bold">{lastMonthExpenses.toLocaleString()}</p>
           </CardHeader>
         </Card>
         <Card>
@@ -71,11 +127,7 @@ export default function Dashboard() {
               <Wallet />
             </CardTitle>
             <CardDescription>SAVINGS</CardDescription>
-            <CardAction className="text-chart">
-              <BadgeCheck />
-              Goal
-            </CardAction>
-            <p className="font-bold">$28,500.00</p>
+            <p className="font-bold">28,500.00</p>
           </CardHeader>
         </Card>
       </div>
@@ -85,7 +137,7 @@ export default function Dashboard() {
             <CardTitle className="text-chart">Monthly spending</CardTitle>
           </CardHeader>
           <CardContent>
-            <BarChartComponent previousMonths={data?.previousMonths ?? []} />
+            <BarChartComponent previousMonths={stats?.previousMonths ?? []} />
           </CardContent>
         </Card>
         <Card className="[--card-spacing:--spacing(4)]">
@@ -93,7 +145,7 @@ export default function Dashboard() {
             <CardTitle className="text-chart">Spending by category</CardTitle>
           </CardHeader>
           <CardContent>
-            <PieChartComponent totalsCategory={data?.totalsCategory ?? []} />
+            <PieChartComponent totalsCategory={stats?.totalsCategory ?? []} />
           </CardContent>
         </Card>
       </div>
