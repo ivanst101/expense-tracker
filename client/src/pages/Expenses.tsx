@@ -1,6 +1,5 @@
 import DialogWindow from "@/components/Dialog.tsx";
-import { columns } from "../components/Table/columns.tsx";
-import { DataTable } from "@/components/Table/data-table";
+import TableComponent from "../components/Table.tsx";
 import { useCurrentExpenses, useDeleteExpense } from "@/hooks/useExpenses.ts";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -11,15 +10,15 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/components/ui/item.tsx";
+import { useState } from "react";
 
 export default function Expenses() {
-  const { data, isPending, isError, error } = useCurrentExpenses();
+  const [page, setPage] = useState(1);
+  const { data, isPending, isError, error } = useCurrentExpenses(page);
   const deleteExpenseMutation = useDeleteExpense();
   const handleDelete = (id: string) => {
     deleteExpenseMutation.mutate(id);
   };
-
-  const tableColumns = columns(handleDelete);
 
   if (isPending) {
     return <p>Loading...</p>;
@@ -28,6 +27,8 @@ export default function Expenses() {
   if (isError) {
     return <p>Error: {error.message}</p>;
   }
+
+  const totalPages = Math.ceil(data.totalResults / data.limit);
 
   return (
     <div className="px-4 py-3">
@@ -54,7 +55,26 @@ export default function Expenses() {
         </ItemActions>
       </Item>
       <main className="container mx-auto">
-        <DataTable columns={tableColumns} data={data} />
+        <TableComponent data={data.data} onDelete={handleDelete} />
+        <div className="flex items-center justify-center gap-4 py-4">
+          <Button
+            disabled={page === 1}
+            onClick={() => setPage((prev) => prev - 1)}
+          >
+            Previous
+          </Button>
+
+          <span>
+            Page {page} of {totalPages}
+          </span>
+
+          <Button
+            disabled={page === totalPages}
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Next
+          </Button>
+        </div>
       </main>
     </div>
   );

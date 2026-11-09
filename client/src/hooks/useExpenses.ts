@@ -1,12 +1,15 @@
-import type { Expense, ExpenseResponse } from "@/types/expenseType";
+import { updateExpense } from "@/api/updateExpense";
+import type { Expense, ExpenseResponse } from "@/types/ExpenseType";
 import type { ExpenseFormValues } from "@/types/formTypes";
 import type { StatsResponse } from "@/types/statsType";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getCurrentExpenses = async (): Promise<Expense[]> => {
-  const response = await fetch(`${API_URL}/expenses`, {
+export const getCurrentExpenses = async (
+  page: number,
+): Promise<ExpenseResponse> => {
+  const response = await fetch(`${API_URL}/expenses?page=${page}&limit=10`, {
     credentials: "include",
   });
 
@@ -15,13 +18,13 @@ export const getCurrentExpenses = async (): Promise<Expense[]> => {
   }
 
   const result: ExpenseResponse = await response.json();
-  return result.data;
+  return result;
 };
 
-export const useCurrentExpenses = () => {
+export const useCurrentExpenses = (page: number) => {
   return useQuery({
-    queryKey: ["expenses"],
-    queryFn: getCurrentExpenses,
+    queryKey: ["expenses", page],
+    queryFn: () => getCurrentExpenses(page),
   });
 };
 
@@ -108,3 +111,22 @@ export function useDeleteExpense() {
     },
   });
 }
+
+export const useUpdateExpense = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, expense }: { id: string; expense: ExpenseFormValues }) =>
+      updateExpense(id, expense),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["expenses"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["stats"],
+      });
+    },
+  });
+};

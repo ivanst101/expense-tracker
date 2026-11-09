@@ -15,7 +15,13 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import { Banknote, CircleEuro, ShoppingCart, Wallet } from "lucide-react";
+import {
+  Banknote,
+  CircleEuro,
+  ShoppingCart,
+  SquarePen,
+  Wallet,
+} from "lucide-react";
 
 export default function Dashboard() {
   const { data: stats } = useCurrentStats();
@@ -47,7 +53,7 @@ export default function Dashboard() {
             </p>
           </CardHeader>
         </Card>
-        <Card>
+        <Card className="relative">
           <CardHeader>
             <CardTitle className="text-chart">
               <Banknote />
@@ -61,7 +67,7 @@ export default function Dashboard() {
           </CardHeader>
           {income?.data.income == null || isEditing ? (
             <form
-              className="flex items-center gap-1"
+              className="flex flex-col items-center gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
 
@@ -79,36 +85,39 @@ export default function Dashboard() {
               }}
             >
               <Input
+                className="w-fit"
                 type="number"
                 placeholder="Enter monthly income"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
 
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Saving..." : "Update Income"}
-              </Button>
-
-              {isEditing && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditing(false)}
-                >
-                  Cancel
+              <div className="flex justify-between">
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Saving..." : "Update Income"}
                 </Button>
-              )}
+
+                {isEditing && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
             </form>
           ) : (
             <Button
-              className="w-fit self-center"
+              className="w-fit self-center absolute right-1 top-1"
               variant="outline"
               onClick={() => {
                 setAmount(String(income.data.income!.amount));
                 setIsEditing(true);
               }}
             >
-              Edit Income
+              <SquarePen className="text-chart" />
             </Button>
           )}
         </Card>

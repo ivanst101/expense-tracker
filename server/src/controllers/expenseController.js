@@ -27,13 +27,13 @@ export async function getAllExpenses(req, res, next) {
   }
 
   const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 100;
+  const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
   query = query.skip(skip).limit(limit);
 
+  const totalExpenses = await Expense.countDocuments(filters);
   if (req.query.page) {
-    const numExpenses = await Expense.countDocuments();
-    if (skip >= numExpenses) throw new Error("This page does not exists!");
+    if (skip >= totalExpenses) throw new Error("This page does not exists!");
   }
 
   const expenses = await query;
@@ -41,6 +41,9 @@ export async function getAllExpenses(req, res, next) {
   res.status(200).json({
     status: "Success",
     results: expenses.length,
+    totalResults: totalExpenses,
+    page,
+    limit,
     data: expenses,
   });
 }
@@ -76,10 +79,17 @@ export async function deleteExpense(req, res) {
 export async function updateExpense(req, res) {
   const id = req.params.id;
 
-  const expense = await Expense.findByIdAndUpdate(id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const expense = await Expense.findByIdAndUpdate(
+    {
+      _id: req.params.id,
+      user: req.user._id,
+    },
+    req.body,
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
 
   if (!expense) {
     error.statusCode = 404;

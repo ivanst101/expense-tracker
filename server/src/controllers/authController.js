@@ -40,7 +40,7 @@ export async function login(req, res, next) {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.status(404);
+    res.status(400);
     throw new Error("Please provide email and password");
   }
 

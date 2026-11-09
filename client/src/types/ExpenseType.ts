@@ -12,5 +12,8 @@ export type Expense = {
 export type ExpenseResponse = {
   status: string;
   results: number;
+  totalResults: number;
+  page: number;
+  limit: number;
   data: Expense[];
 };

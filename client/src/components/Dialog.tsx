@@ -3,7 +3,6 @@ import {
   DialogTrigger,
   DialogContent,
   DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
   DialogClose,
@@ -27,18 +26,20 @@ import {
 import { CircleCheck } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { useAddExpense } from "@/hooks/useExpenses";
+import { useAddExpense, useUpdateExpense } from "@/hooks/useExpenses";
 import { expenseSchema, type ExpenseFormValues } from "@/types/formTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Expense } from "@/types/ExpenseType";
 
 interface DialogWindowProps {
   button: React.ReactElement;
+  expense?: Expense;
 }
 
-export default function DialogWindow({ button }: DialogWindowProps) {
+export default function DialogWindow({ button, expense }: DialogWindowProps) {
   const [open, setOpen] = useState<boolean>(false);
   const categories = [
     { label: "Food", value: "food" },
@@ -49,8 +50,6 @@ export default function DialogWindow({ button }: DialogWindowProps) {
     { label: "Essential", value: "essential" },
     { label: "Rest", value: "rest" },
   ];
-
-  const { mutate: addExpense } = useAddExpense();
 
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
@@ -63,18 +62,61 @@ export default function DialogWindow({ button }: DialogWindowProps) {
     },
   });
 
-  const onSubmit: SubmitHandler<ExpenseFormValues> = (values) => {
-    addExpense(values, {
-      onSuccess: () => {
-        toast.success("Expense added successfully!");
+  useEffect(() => {
+    if (expense) {
+      form.reset({
+        title: expense.title,
+        amount: String(expense.amount),
+        category: expense.category,
+        date: expense.date ? expense.date.slice(0, 10) : "",
+        note: expense.note,
+      });
+    } else {
+      form.reset({
+        title: "",
+        amount: "",
+        category: "",
+        date: "",
+        note: "",
+      });
+    }
+  }, [expense, form]);
 
-        form.reset();
-        setOpen(false);
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    });
+  const { mutate: addExpense } = useAddExpense();
+  const { mutate: updateExpense } = useUpdateExpense();
+
+  const onSubmit: SubmitHandler<ExpenseFormValues> = (values) => {
+    if (expense) {
+      updateExpense(
+        {
+          id: expense._id,
+          expense: values,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Expense updated successfully!");
+
+            form.reset();
+            setOpen(false);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      );
+    } else {
+      addExpense(values, {
+        onSuccess: () => {
+          toast.success("Expense added successfully!");
+
+          form.reset();
+          setOpen(false);
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      });
+    }
   };
 
   return (
@@ -82,7 +124,7 @@ export default function DialogWindow({ button }: DialogWindowProps) {
       <DialogTrigger render={button}></DialogTrigger>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>Add Transaction</DialogTitle>
+          {expense ? "Edit Transaction" : "Add Transaction"}
           <DialogDescription>
             Log a new expense to your wealth dashboard
           </DialogDescription>
