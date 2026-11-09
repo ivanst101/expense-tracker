@@ -15,5 +15,7 @@ export type ExpenseResponse = {
   totalResults: number;
   page: number;
   limit: number;
+  total: number;
+  totalPages: number;
   data: Expense[];
 };

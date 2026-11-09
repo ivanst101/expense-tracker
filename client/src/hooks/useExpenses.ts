@@ -8,23 +8,32 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const getCurrentExpenses = async (
   page: number,
+  month: string,
+  signal?: AbortSignal,
 ): Promise<ExpenseResponse> => {
-  const response = await fetch(`${API_URL}/expenses?page=${page}&limit=10`, {
+  const params = new URLSearchParams({
+    month,
+    page: String(page),
+    limit: "10",
+  });
+
+  const response = await fetch(`${API_URL}/expenses?${params}`, {
     credentials: "include",
+    signal,
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch users expenses!");
+    throw new Error("Failed to fetch your expenses!");
   }
 
   const result: ExpenseResponse = await response.json();
   return result;
 };
 
-export const useCurrentExpenses = (page: number) => {
+export const useCurrentExpenses = (page: number, month: string) => {
   return useQuery({
-    queryKey: ["expenses", page],
-    queryFn: () => getCurrentExpenses(page),
+    queryKey: ["expenses", month, page],
+    queryFn: ({ signal }) => getCurrentExpenses(page, month, signal),
   });
 };
 

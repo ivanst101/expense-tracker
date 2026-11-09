@@ -1,8 +1,9 @@
 import { Expense } from "../models/expenseModel.js";
+import { monthRange, paginationParams } from "../utils/expenseQuery.js";
 
 export async function getAllExpenses(req, res, next) {
   const queryObj = { ...req.query };
-  const excludedFields = ["page", "sort", "limit", "fields"];
+  const excludedFields = ["page", "sort", "limit", "fields", "month"];
   excludedFields.forEach((item) => delete queryObj[item]);
 
   let queryStr = JSON.stringify(queryObj);
@@ -10,13 +11,23 @@ export async function getAllExpenses(req, res, next) {
 
   const filters = JSON.parse(queryStr);
   filters.user = req.user._id;
+
+  if (req.query.month !== undefined) {
+    filters.date = monthRange(req.query.month);
+  }
+
+  const { page: requestPage, limit } = paginationParams(req.query);
+  const totalExpenses = await Expense.countDocuments(filters);
+  const totalPages = Math.ceil(totalExpenses / limit);
+  const page = Math.min(requestPage, Math.max(1, totalPages));
+
   let query = Expense.find(filters);
 
   if (req.query.sort) {
     const sortBy = req.query.sort.split(",").join(" ");
-    query = query.sort(sortBy);
+    query = query.sort(`${sortBy} _id`);
   } else {
-    query = query.sort("-createdAt");
+    query = query.sort(req.query.month ? "-date -_id" : "-createdAt -_id");
   }
 
   if (req.query.fields) {
@@ -26,15 +37,8 @@ export async function getAllExpenses(req, res, next) {
     query = query.select("-__v");
   }
 
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
-  query = query.skip(skip).limit(limit);
-
-  const totalExpenses = await Expense.countDocuments(filters);
-  if (req.query.page) {
-    if (skip >= totalExpenses) throw new Error("This page does not exists!");
-  }
+  query = query.skip((page - 1) * limit).limit(limit);
 
   const expenses = await query;
 
@@ -44,6 +48,7 @@ export async function getAllExpenses(req, res, next) {
     totalResults: totalExpenses,
     page,
     limit,
+    totalPages,
     data: expenses,
   });
 }
@@ -191,7 +196,7 @@ export async function getUserStats(req, res) {
       $match: {
         user: req.user._id,
         date: {
-          $gte: startDate,
+          $gte: new Date(today.getFullYear(), today.getMonth(), 1),
           $lt: new Date(today.getFullYear(), today.getMonth() + 1, 1),
         },
       },

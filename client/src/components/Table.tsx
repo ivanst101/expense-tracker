@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
 import DialogWindow from "./Dialog";
+import type { Expense } from "@/types/ExpenseType";
 
 const formatAmount = (amount: number) => {
   return new Intl.NumberFormat(navigator.language, {
@@ -16,11 +17,20 @@ const formatAmount = (amount: number) => {
   }).format(amount);
 };
 
-const formatDate = (dateParam: string) => {
+const formatDate = (dateParam?: string) => {
+  if (!dateParam) return "-";
   return new Intl.DateTimeFormat("sr-RS").format(new Date(dateParam));
 };
 
-export default function TableComponent({ data, onDelete }) {
+interface TableComponentProps {
+  data: Expense[];
+  onDelete: (id: string) => void;
+}
+
+export default function TableComponent({
+  data,
+  onDelete,
+}: TableComponentProps) {
   return (
     <Table>
       <TableHeader>
@@ -34,6 +44,13 @@ export default function TableComponent({ data, onDelete }) {
         </TableRow>
       </TableHeader>
       <TableBody>
+        {data.length == 0 && (
+          <TableRow>
+            <TableCell colSpan={6} className="h-24 text-center">
+              No expenses for this month
+            </TableCell>
+          </TableRow>
+        )}
         {data.map((expense) => (
           <TableRow key={expense._id}>
             <TableCell>{formatDate(expense.date)}</TableCell>
